@@ -1,6 +1,19 @@
 import React from 'react'
 
-const Toolbar = () => {
+const Toolbar = ({messages, selectAll}) => {
+
+  const checkedClass = () => {
+    for(var i = 0; i < messages.length; i++) {
+      if(messages[i].selected) {
+        return 'fa-check-square-o'
+      } else {
+        return 'fa-square-o'
+      }
+    }
+  }
+
+  const checkClass = checkedClass(messages)
+
   return (
     <div className="row toolbar">
       <div className="col-md-12">
@@ -9,8 +22,8 @@ const Toolbar = () => {
           unread messages
         </p>
 
-        <button className="btn btn-default">
-          <i className="fa fa-check-square-o"></i>
+        <button className="btn btn-default" onClick={()=> {selectAll(messages)}}>
+          <i className={`fa ${checkClass}`}></i>
         </button>
 
         <button className="btn btn-default">

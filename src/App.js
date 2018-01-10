@@ -11,6 +11,21 @@ class App extends Component {
     }
   }
 
+  selectAll = (messages) => {
+    var messageArr = messages.filter(message => message.selected)
+    let newMessages = this.state.messages.slice(0)
+
+    return newMessages.map(ele => {
+      if (messageArr.length < newMessages.length) {
+        ele.selected = true
+        return this.setState({messages:newMessages})
+      } else {
+        ele.selected = false
+        return this.setState({messages:newMessages})
+      }
+    })
+  }
+
   toggleClass = (message, objectKey) => {
     const index = this.state.messages.indexOf(message)
     let newMessages = this.state.messages.slice(0)
@@ -43,11 +58,10 @@ class App extends Component {
           </div>
         </div>
         <div className='container'>
-          <Toolbar />
+          <Toolbar messages={this.state.messages} selectAll={this.selectAll}/>
           <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass}/>
         </div>
       </div>
-
     )
   }
 }
