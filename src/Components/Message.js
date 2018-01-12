@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Message = ({message, toggleClass}) => {
+const Message = ({message, toggleClass, markRead}) => {
 
 const checkReadClass = (message => {
   if(message.read) {
