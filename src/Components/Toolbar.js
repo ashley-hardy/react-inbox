@@ -27,6 +27,10 @@ const Toolbar = ({messages, message, selectAll, markRead, markUnread, deleteMess
           unread messages
         </p>
 
+        <a className="btn btn-danger">
+          <i className="fa fa-plus"></i>
+        </a>
+
         <button className="btn btn-default" onClick={()=> {selectAll(messages)}}>
           <i className={`fa ${checkClass}`}></i>
         </button>

@@ -7,8 +7,14 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      messages: this.props.messages
+      messages:[]
     }
+  }
+
+  async componentDidMount() {
+    const response = await fetch('http://localhost:8082/api/messages')
+    const json = await response.json()
+    this.setState({messages:json._embedded.messages})
   }
 
   toggleClass = (message, objectKey) => {
@@ -109,8 +115,13 @@ class App extends Component {
           </div>
         </div>
         <div className='container'>
-          <Toolbar messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead}/>
-          <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass}/>
+          {
+            this.state.messages.length !== 0 &&
+            <div>
+              <Toolbar messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead}/>
+              <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass}/>
+            </div>
+          }
         </div>
       </div>
     )
