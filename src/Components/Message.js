@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Message = ({message, toggleClass, markRead}) => {
+const Message = ({message, toggleClass, markRead, persist}) => {
 
 const checkReadClass = (message => {
   if(message.read) {
@@ -16,13 +16,34 @@ const checked = message.selected ? 'checked' : ''
 const starredClass = message.starred ? '' : '-o'
 
   return (
-    <div className={`row message ${readClass} ${selectedClass}`} onClick={()=>{toggleClass(message)}}>
+    <div className={`row message ${readClass} ${selectedClass}`} onClick={(event)=>{
+      const body = {
+        'messageIds': [message.id],
+        'command': 'read',
+        'read': !message.read
+      }
+      persist(body, 'PATCH')
+      toggleClass(event, message, "read")}}>
       <div className="col-xs-1">
         <div className="row">
-          <div className="col-xs-2" onClick={()=>{toggleClass(message, 'selected')}}>
+          <div className="col-xs-2" onClick={(event)=>{
+            const body = {
+              'messageIds': [message.id],
+              'command': 'read',
+              'read': !message.read
+            }
+            persist(body, 'PATCH')
+            toggleClass(event, message, 'selected')}}>
             <input type="checkbox" checked={`${checked}`}/>
           </div>
-          <div className="col-xs-2" onClick={()=>toggleClass(message, 'starred')}>
+          <div className="col-xs-2" onClick={(event)=> {
+            const body = {
+              'messageIds': [message.id],
+              'command': 'star',
+              'star': !message.starred
+            }
+            persist(body, 'PATCH')
+            toggleClass(event, message, 'starred')}}>
             <i className={`star fa fa-star${starredClass}`}></i>
           </div>
         </div>

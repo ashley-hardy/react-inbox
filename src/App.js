@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import './App.css';
 import MessagesList from './Components/MessagesList'
 import Toolbar from './Components/Toolbar'
+import Compose from './Components/Compose'
+let clickOnce = true
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      messages:[]
+      messages:[],
+      visibility: 'none',
+      subjectContent: '',
+      bodyContent: ''
     }
   }
 
@@ -17,7 +22,19 @@ class App extends Component {
     this.setState({messages:json._embedded.messages})
   }
 
-  toggleClass = (message, objectKey) => {
+  async persist(body, method) {
+    await fetch ('http://localhost:8082/api/messages', {
+      method: method,
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
+  }
+
+  toggleClass = (event, message, objectKey) => {
+    event.stopPropagation()
     const index = this.state.messages.indexOf(message)
     let newMessages = this.state.messages.slice(0)
     newMessages[index][objectKey] = !newMessages[index][objectKey]
@@ -90,6 +107,26 @@ class App extends Component {
     })
   }
 
+  composeMessage = () => {
+    if(clickOnce === true) {
+      this.setState({visibility:'block'})
+      clickOnce = false
+    } else {
+      this.setState({visibility:'none'})
+      clickOnce = true
+    }
+   }
+
+  grabSubject = (event) => {
+    let subjectContent = event.target.value
+    this.setState({subjectContent: subjectContent})
+  }
+
+  grabBody = (event) => {
+    let bodyContent = event.target.value
+    this.setState({bodyContent: bodyContent})
+  }
+
   render() {
     return (
       <div className="App">
@@ -115,13 +152,9 @@ class App extends Component {
           </div>
         </div>
         <div className='container'>
-          {
-            this.state.messages.length !== 0 &&
-            <div>
-              <Toolbar messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead}/>
-              <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass}/>
-            </div>
-          }
+          <Toolbar messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead} persist={this.persist} composeMessage={this.composeMessage}/>
+          <Compose visibility={this.state.visibility} persist={this.persist} grabSubject={this.grabSubject} grabBody={this.grabBody} subjectContent={this.state.subjectContent} bodyContent={this.state.bodyContent}/>
+          <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass} persist={this.persist}/>
         </div>
       </div>
     )
