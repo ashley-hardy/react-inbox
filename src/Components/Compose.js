@@ -3,10 +3,9 @@ import React from 'react'
 const Compose = ({message, visibility, grabSubject, grabBody, persist, subjectContent, bodyContent}) => {
 
   let style = ''
-  if(visibility === 'block'){
+  if(visibility === 'block') {
     style = 'block'
-  }
-  else {
+  } else {
     style = 'none'
   }
 
