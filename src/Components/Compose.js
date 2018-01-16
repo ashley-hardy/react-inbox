@@ -31,7 +31,6 @@ const Compose = ({message, visibility, grabSubject, grabBody, persist, subjectCo
         </div>
         <div className="form-group">
           <div className="col-sm-8 col-sm-offset-2" onClick={()=>{
-            console.log(subjectContent);
             const body = {
               'subject': subjectContent,
               'body': bodyContent
