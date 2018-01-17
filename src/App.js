@@ -1,4 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom'
 import './App.css';
 import MessagesList from './Components/MessagesList'
 import Toolbar from './Components/Toolbar'
@@ -100,22 +104,27 @@ class App extends Component {
     let newMessages = this.state.messages.slice(0)
     return newMessages.forEach(ele => {
       if(ele.selected) {
-        let index = ele.labels.indexOf(e)
-        ele.labels.splice(index, 1)
-        return this.setState({messages:newMessages})
+        for(var i = 0; i < ele.selected.labels; i++) {
+          if (e === ele.selected.labels[i]) {
+            ele.labels.splice(i)
+
+          }
+        }
       }
+      return newMessages
     })
+    this.setState({messages:newMessages})
   }
 
   composeMessage = () => {
-    if(clickOnce === true) {
-      this.setState({visibility:'block'})
-      clickOnce = false
-    } else {
-      this.setState({visibility:'none'})
-      clickOnce = true
-    }
-   }
+      if(clickOnce === true) {
+        this.setState({visibility:'block'})
+        clickOnce = false
+      } else {
+        this.setState({visibility:'none'})
+        clickOnce = true
+      }
+  }
 
   grabSubject = (event) => {
     let subjectContent = event.target.value
@@ -127,36 +136,60 @@ class App extends Component {
     this.setState({bodyContent: bodyContent})
   }
 
+  setVisible = () => {
+    this.setState({visibility: 'block'})
+  }
+
   render() {
     return (
-      <div className="App">
-        <div className="navbar navbar-default" role="navigation">
-          <div className="container">
-            <div className="navbar-header">
-              <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-              </button>
-              <a className="navbar-brand" href="/">Inbox Styleguide</a>
-            </div>
-            <div className="collapse navbar-collapse">
-              <ul className="nav navbar-nav">
-                <li><a href="/">Components</a></li>
-                <li><a href="/example">Example</a></li>
-                <li><a href="/css">CSS</a></li>
-                  <li><a href="/seeds">Seeds</a></li>
-              </ul>
+      <Router>
+        <div className="App">
+          <div className="navbar navbar-default" role="navigation">
+            <div className="container">
+              <div className="navbar-header">
+                <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span className="sr-only">Toggle navigation</span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                </button>
+                <a className="navbar-brand" href="/">Inbox Styleguide</a>
+              </div>
+              <div className="collapse navbar-collapse">
+                <ul className="nav navbar-nav">
+                  <li><a href="/">Components</a></li>
+                  <li><a href="/example">Example</a></li>
+                  <li><a href="/css">CSS</a></li>
+                    <li><a href="/seeds">Seeds</a></li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-        <div className='container'>
-          <Toolbar messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead} persist={this.persist} composeMessage={this.composeMessage}/>
-          <Compose visibility={this.state.visibility} persist={this.persist} grabSubject={this.grabSubject} grabBody={this.grabBody} subjectContent={this.state.subjectContent} bodyContent={this.state.bodyContent}/>
-          <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass} persist={this.persist}/>
+          <div className='container'>
+            <Route exact path='/' render={() => (
+              <div>
+              <Toolbar visibility={this.state.visibility} messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead} persist={this.persist} composeMessage={this.composeMessage}/>
+              <Compose visibility={this.state.visibility} persist={this.persist} grabSubject={this.grabSubject} grabBody={this.grabBody} subjectContent={this.state.subjectContent} bodyContent={this.state.bodyContent}/>
+              <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass} persist={this.persist}/>
+            </div>
+          )}/>
+          <Route exact path ='/compose' render={() => (
+            <div>
+            <Toolbar visibility={this.state.visibility} messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead} persist={this.persist} composeMessage={this.composeMessage}/>
+            <Compose setVisible={this.setVisible} visibility={this.state.visibility} visibile={this.visible} persist={this.persist} grabSubject={this.grabSubject} grabBody={this.grabBody} subjectContent={this.state.subjectContent} bodyContent={this.state.bodyContent}/>
+            <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass} persist={this.persist}/>
+          </div>
+          )}/>
+          <Route exact path ='/messages/:id' render={() => (
+            <div>
+            <Toolbar visibility={this.state.visibility} messages={this.state.messages} selectAll={this.selectAll} markRead={this.markRead} markUnread={this.markUnread} deleteMessage={this.deleteMessage} addLabel={this.addLabel} removeLabel={this.removeLabel} updateRead={this.updateRead} persist={this.persist} composeMessage={this.composeMessage}/>
+            <Compose setVisible={this.setVisible} visibility={this.state.visibility} visibile={this.visible} persist={this.persist} grabSubject={this.grabSubject} grabBody={this.grabBody} subjectContent={this.state.subjectContent} bodyContent={this.state.bodyContent}/>
+            <MessagesList messages={this.state.messages} toggleClass= {this.toggleClass} persist={this.persist}/>
+          </div>
+          )}/>
         </div>
       </div>
+    </Router>
     )
   }
 }

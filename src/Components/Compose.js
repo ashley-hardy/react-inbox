@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Compose = ({message, visibility, grabSubject, grabBody, persist, subjectContent, bodyContent}) => {
+const Compose = ({message, visibility, grabSubject, grabBody, persist, subjectContent, bodyContent, setVisible}) => {
 
   let style = ''
   if(visibility === 'block') {

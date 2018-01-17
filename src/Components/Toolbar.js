@@ -1,7 +1,7 @@
 import React from 'react'
-import Compose from './Compose'
+import {Route, Switch, Link } from 'react-router-dom'
 
-const Toolbar = ({messages, message, selectAll, markRead, markUnread, deleteMessage, addLabel, removeLabel, updateRead, addS, composeMessage, persist, findLabels, remove, trash}) => {
+const Toolbar = ({messages, message, selectAll, markRead, markUnread, deleteMessage, addLabel, removeLabel, updateRead, addS, composeMessage, persist, findLabels, remove, trash, hideMessage, togglePath, visibility, keepVisible}) => {
 
   const checkedClass = () => {
     for(var i = 0; i < messages.length; i++) {
@@ -51,7 +51,7 @@ const Toolbar = ({messages, message, selectAll, markRead, markUnread, deleteMess
       'command': 'removeLabel',
       'label': ''
     }
-    const newMessages = messages.map(message => {
+    messages.map(message => {
       if(message.selected) {
         body.messageIds.push(message.id)
         body.label = event.target.value
@@ -75,6 +75,14 @@ const Toolbar = ({messages, message, selectAll, markRead, markUnread, deleteMess
     deleteMessage(messages)
   }
 
+  togglePath = () => {
+    if (visibility === 'block') {
+      return '/'
+    } else {
+      return '/compose'
+    }
+  }
+
   return (
     <div className="row toolbar">
       <div className="col-md-12">
@@ -83,9 +91,9 @@ const Toolbar = ({messages, message, selectAll, markRead, markUnread, deleteMess
           {`${addS()}`}
         </p>
 
-        <a className="btn btn-danger" onClick={()=> {composeMessage()}}>
-          <i className="fa fa-plus"></i>
-        </a>
+        <Link to={`${togglePath()}`} className="btn btn-danger" onClick={()=> {composeMessage()}}>
+            <i className="fa fa-plus"></i>
+        </Link>
 
         <button className="btn btn-default" onClick={()=> {selectAll(messages)}}>
           <i className={`fa ${checkClass}`}></i>
